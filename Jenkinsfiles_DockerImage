@@ -1,0 +1,37 @@
+pipeline{
+    agent any
+   
+    environment  {
+        registry="jitendra0625/docker_jenkins1"
+        registryCredential="docker_id"
+        dockerImage=''
+    }
+    stages{
+        
+    
+    
+    stage ('Checkout'){
+        steps{
+         git 'https://github.com/Jitendra025/Jenkins_Docker'   
+        }
+    }
+    
+ stage ('Docker build'){
+        steps{
+            script{
+            dockerImage = docker.build(registry+ "weatherforecast:${BUILD_NUMBER}", "-f=Webapi3/Dockerfile .")
+            }
+    }
+    }
+    
+     stage ('Docker Image Upload'){
+        steps{
+            script{
+             docker.withRegistry('https://registry.hub.docker.com',registryCredential ){
+                 dockerImage.push()
+             }
+            }
+    }
+    }
+}
+ }
