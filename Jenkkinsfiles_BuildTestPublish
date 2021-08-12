@@ -1,0 +1,32 @@
+pipeline{
+    agent any
+    environment {
+                MSBUILD = "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe"
+                MSTEST = "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\MSTest.exe"
+
+               
+    }
+    
+    stages{
+     stage("Build"){
+         steps{
+             
+             bat "\"${MSBUILD}\" C:\\Net\\Webapi2\\Webapi2.sln"
+         }
+    }   
+    
+     stage("Test"){
+         steps{
+            bat 'dotnet test C:\\Net\\TestProject1\\bin\\Debug\\netcoreapp3.1\\TestProject1.dll --logger "trx;LogFileName=C:\\WINDOWS\\system32\\config\\systemprofile\\AppData\\Local\\Jenkins\\.jenkins\\workspace\\NetPipeline\\TestResults\\result.trx"'
+
+         }
+    }   
+         stage("Publish"){
+         steps{
+            bat 'dotnet publish C:\\Net\\Webapi2\\Webapi2.csproj'
+
+         }
+    }   
+       
+   }
+}
