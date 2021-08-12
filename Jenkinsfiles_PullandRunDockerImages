@@ -1,0 +1,50 @@
+pipeline{
+    agent any
+    environment {
+        registryCredential="docker_id"
+        dockerContainer='TestContainer'
+    }
+    stages{
+        stage('docker stop container') {
+            steps{
+                script{
+                    
+                        try{
+                         bat(script: "docker stop ${dockerContainer}")
+                         bat(script: "docker rm ${dockerContainer}")
+                        }
+                        catch(Exception e){
+                            
+                        }
+                    }
+                    
+                }
+           }
+   
+    stage('Run Docker Image') {
+            steps{
+                script{
+                    try{
+                   docker.withRegistry('https://registry.hub.docker.com',registryCredential){
+                       
+                   //docker.image("jitendra0625/weatherforecast:4}").run("--name TestContainer -p 1234:80")
+                    docker.image('jitendra0625/weatherforecast:4').withRun('-p 12347:80 --name TestContainer')
+                    {
+                      //bat(script: "docker stop ${dockerContainer}")
+                      //bat(script: "docker start ${dockerContainer}")
+                    }
+                   }
+                    }
+                    catch(Exception e)
+                    {
+                    
+                    }
+                    
+            
+           
+   }
+      
+ }
+}
+}
+}
